@@ -500,7 +500,7 @@ func (n *hdfsObjects) populateDirectoryListing(filePath string, fileInfos map[st
 
 	fileInfos[key] = dirStat
 	infos, err := dirReader.Readdir(0)
-
+	fmt.Printf("populateDirectoryListing %s get %s %s \n", filePath, infos, err)
 	if err != nil {
 		return nil, err
 	}
@@ -667,14 +667,18 @@ func (n *hdfsObjects) GetObjectInfo(ctx context.Context, bucket, object string, 
 	if err != nil {
 		return objInfo, hdfsToObjectErr(ctx, err, bucket)
 	}
-	if strings.HasSuffix(object, hdfsSeparator) && !n.isObjectDir(ctx, bucket, object) {
-		return objInfo, hdfsToObjectErr(ctx, os.ErrNotExist, bucket, object)
-	}
 
 	fi, err := n.clnt.Stat(n.hdfsPathJoin(bucket, object))
 	if err != nil {
 		return objInfo, hdfsToObjectErr(ctx, err, bucket, object)
 	}
+
+	if strings.HasSuffix(object, hdfsSeparator) && !fi.IsDir() {
+		return objInfo, hdfsToObjectErr(ctx, os.ErrNotExist, bucket, object)
+	} else if !strings.HasSuffix(object, hdfsSeparator) && fi.IsDir() {
+		return objInfo, hdfsToObjectErr(ctx, os.ErrNotExist, bucket, object)
+	}
+
 	return minio.ObjectInfo{
 		Bucket:  bucket,
 		Name:    object,

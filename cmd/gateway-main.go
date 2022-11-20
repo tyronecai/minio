@@ -36,7 +36,7 @@ import (
 )
 
 var (
-	gatewayCmd = cli.Command{
+	 gatewayCmd = cli.Command{
 		Name:            "gateway",
 		Usage:           "start object storage gateway",
 		Flags:           append(ServerFlags, GlobalFlags...),
@@ -358,9 +358,9 @@ func StartGateway(ctx *cli.Context, gw Gateway) {
 
 	// Prints the formatted startup message once object layer is initialized.
 	if !globalCLIContext.Quiet {
-		mode := globalMinioModeGatewayPrefix + gatewayName
+		//mode := globalMinioModeGatewayPrefix + gatewayName
 		// Check update mode.
-		checkUpdate(mode)
+		//checkUpdate(mode)
 
 		// Print a warning message if gateway is not ready for production before the startup banner.
 		if !gw.Production() {
