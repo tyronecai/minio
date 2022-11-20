@@ -161,8 +161,11 @@ func listObjectsNonSlash(ctx context.Context, bucket, prefix, marker, delimiter 
 
 	if !eof {
 		result.IsTruncated = true
+		// https://github.com/minio/minio/commit/e1a0a1e73c46fbb909090f9b4e09f9eee8c82588
 		if len(objInfos) > 0 {
 			result.NextMarker = objInfos[len(objInfos)-1].Name
+		} else if len(result.Prefixes) > 0 {
+			result.NextMarker = result.Prefixes[len(result.Prefixes)-1]
 		}
 	}
 
@@ -288,6 +291,8 @@ func listObjects(ctx context.Context, obj ObjectLayer, bucket, prefix, marker, d
 		if !ok {
 			// Closed channel.
 			eof = true
+			// https://github.com/minio/minio/commit/ef994386957705b137f0ba61c12f0414d985a17e
+			break
 		}
 
 		if HasSuffix(walkResult.entry, SlashSeparator) {
@@ -368,8 +373,11 @@ func listObjects(ctx context.Context, obj ObjectLayer, bucket, prefix, marker, d
 
 	if !eof {
 		result.IsTruncated = true
+		// https://github.com/minio/minio/commit/e1a0a1e73c46fbb909090f9b4e09f9eee8c82588
 		if len(objInfos) > 0 {
 			result.NextMarker = objInfos[len(objInfos)-1].Name
+		} else if len(result.Prefixes) > 0 {
+			result.NextMarker = result.Prefixes[len(result.Prefixes)-1]
 		}
 	}
 
