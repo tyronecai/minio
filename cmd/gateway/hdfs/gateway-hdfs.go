@@ -500,7 +500,6 @@ func (n *hdfsObjects) populateDirectoryListing(filePath string, fileInfos map[st
 
 	fileInfos[key] = dirStat
 	infos, err := dirReader.Readdir(0)
-	fmt.Printf("populateDirectoryListing %s get %s %s \n", filePath, infos, err)
 	if err != nil {
 		return nil, err
 	}
